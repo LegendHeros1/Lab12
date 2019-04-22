@@ -3,6 +3,11 @@ package edu.illinois.cs.cs125.spring2019.lab12;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -13,6 +18,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 /**
  * Main class for our UI design lab.
@@ -24,6 +30,8 @@ public final class MainActivity extends AppCompatActivity {
     /** Request queue for our API requests. */
     private static RequestQueue requestQueue;
 
+    /** String to display when use pressed Update. */
+    private static String display = "";
     /**
      * Run when this activity comes to the foreground.
      *
@@ -38,7 +46,17 @@ public final class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        startAPICall("192.17.96.8");
+
+        TextView jsonResult = findViewById(R.id.Description);
+        Button lookupAddress = findViewById(R.id.lookup_address);
+        EditText ipAddress = findViewById(R.id.ipAddress);
+        lookupAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                startAPICall(ipAddress.getText().toString());
+                jsonResult.setText(display);
+            }
+        });
     }
 
     /**
@@ -87,6 +105,7 @@ public final class MainActivity extends AppCompatActivity {
         try {
             Log.d(TAG, response.toString(2));
             // Example of how to pull a field off the returned JSON object
+            display = response.toString(2);
             Log.i(TAG, response.get("hostname").toString());
         } catch (JSONException ignored) { }
     }
